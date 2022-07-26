@@ -1,7 +1,7 @@
 import axios,{ AxiosResponse, AxiosRequestConfig } from 'axios'
 
 const request=axios.create({
-  baseURL:'http://localhost:5000/xc-blog',
+  baseURL:'http://localhost:5000/xc-blog/admin',
   timeout:30000,
 })
 //请求拦截器

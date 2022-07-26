@@ -1,40 +1,41 @@
 <script lang="ts" setup>
 import { reactive } from "vue";
 import { PostRequest } from "../api/http";
-import { LoginFormRule, Msg } from "../types/login";
+import { LoginFormRule} from "../types/login";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 const router = useRouter();
 const store = useStore();
-name: "Login";
 // 登录用户信息规则验证
 const form = reactive<LoginFormRule>({
   username: "",
   password: "",
 });
 
-
 // 获取输入信息
 const checkAccount = async () => {
   // 请求数据
   const data = await PostRequest(
-    `/admin/login?username=${form.username}&password=${form.password}`
+    `/login?username=${form.username}&password=${form.password}`
   );
-  let us
-  let psd
-  if(data.records.length){
-     us = data.records[0].username
-     psd = data.records[0].password
+  let us;
+  let psd;
+  if (data.records.length) {
+    us = data.records[0].username;
+    psd = data.records[0].password;
   }
   if (form.username === us && form.password === psd) {
     router.push({
       name: "Home",
-      params:{}
+      params: {
+        
+      },
     });
   } else {
-    return 
+    return;
   }
-  store.commit("checkAccount", data);
+  window.sessionStorage.setItem("token", data.token);
+  store.commit("getUserInfo", form);
 };
 </script>
 
@@ -63,7 +64,6 @@ const checkAccount = async () => {
       </div>
     </div>
   </div>
-
 </template>
 
 <style scoped lang="less">

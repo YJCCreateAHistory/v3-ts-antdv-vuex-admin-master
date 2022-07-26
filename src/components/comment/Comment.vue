@@ -1,13 +1,12 @@
 <template>
-<div class="container">
-
-</div>
+hahahahahaa
 </template>
 
 <script setup lang="ts">
 
+
+
 </script>
 
 <style scoped lang="less">
-
 </style>
