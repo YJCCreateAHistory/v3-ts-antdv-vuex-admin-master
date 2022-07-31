@@ -5,7 +5,9 @@ const store = createStore ({
     state:{
         data:"",
         page:{},
-        flag:{}
+        flag:{},
+        blog:[]
+
     },
     mutations:{
         // 存放token
@@ -20,6 +22,9 @@ const store = createStore ({
         getActiveFlag(state:PAGEINFO, data:FLAG){
             console.log(data)
             state.flag = data
+        },
+        handleOk(state, data) {
+            state.blog = data
         }
     },
     actions:{

@@ -1,14 +1,11 @@
-export interface CLASSINFO{
-    [propName: string]:any
+export interface CLASSINFO {
+    [propName: string]: any
 }
-export interface EL {
-    [propName: string]:string
+export interface CLASSES {
+    [propName: string]: string
 }
-export interface ROUTES {
-    path: string,
-    breadcrumbName: string,
-    children?:Array<{
-        path: string,
-        breadcrumbName: string
-    }>
+export interface CREATECLASSES {
+    data: {
+        [key: string]: string
+    }
 }

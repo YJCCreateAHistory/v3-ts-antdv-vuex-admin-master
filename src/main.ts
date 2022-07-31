@@ -28,7 +28,14 @@ import {
     LayoutContent,
     Card,
     BreadcrumbItem,
-    Table
+    Table,
+    DatePicker,
+    Modal,
+    Switch,
+    List,
+    ListItem,
+    ListItemMeta,
+    Skeleton
 
 } from "ant-design-vue"
 const app = createApp(App)
@@ -61,6 +68,13 @@ app.component(MenuFoldOutlined.name, MenuFoldOutlined)
 app.component(Card.name, Card)
 app.component(BreadcrumbItem.name, BreadcrumbItem)
 app.component(Table.name, Table)
+app.component(DatePicker.name, DatePicker)
+app.component(Modal.name, Modal)
+app.component(Switch.name, Switch)
+app.component(List.name, List)
+app.component(ListItem.name, ListItem)
+app.component(ListItemMeta.name, ListItemMeta)
+app.component(Skeleton.name, Skeleton)
 app.use(router)
 app.use(store)
 app.mount('#app')

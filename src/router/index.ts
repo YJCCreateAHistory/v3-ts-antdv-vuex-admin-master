@@ -88,7 +88,6 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../components/blog/Blog.vue"),
         meta: {
           keepAlive: true,
-          title:["客户端管理","博客管理"]
         }
       }
     ]

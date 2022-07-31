@@ -230,15 +230,6 @@ const columns: TableColumnType[] = reactive([
 // 存放用户数据
 const data = ref<CLASSINFO>([]);
 // 拿到管理员数据
-// const resData = PostRequest("/blog/list").then((res: EL) => {
-//   // res.records.forEach((el: EL, index: number) => {
-//   //   data.push(el);
-//   // });
-//   // for(let i = 0; i < res.records.length; i++) {
-//   //   data.push(res.records[i]);
-//   // }
-//   data.value = [data.value, ...res.records]
-// });
 onMounted(() => {
   PostRequest("/blog/list").then((res: EL) => {
     // res.records.forEach((el: EL, index: number) => {
@@ -296,10 +287,12 @@ const handleOk = async (e: MouseEvent) => {
   PostRequest("/blog/create", info);
   getChange.value // 拿到变化的数据渲染
   // console.log(getChange)
+  console.log(data.value)
 };
 // 监视数据变化
 const getChange = computed(() => {
   PostRequest("/blog/list").then((res: EL) => {
+    data.value.length = 0
     data.value = [data.value, ...res.records];
   });
 });

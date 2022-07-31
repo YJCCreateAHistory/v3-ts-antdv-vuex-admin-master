@@ -20,6 +20,7 @@ created: () => {
 
 <style scoped lang="less">
 .homePage {
+  width:100vw;
   display: flex;
 }
 </style>

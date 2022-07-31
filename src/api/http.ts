@@ -1,11 +1,11 @@
 import request from './request'
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
-export function PostRequest(url: string, params: any = {}): any {
+export function PostRequest(url: string, params: any={}): any {
     return new Promise((resolve, reject) => {
         const data = request({
             url: url,
             method: 'POST',
-            data: {}
+            data: params
         })
         resolve(data)
         reject("error")

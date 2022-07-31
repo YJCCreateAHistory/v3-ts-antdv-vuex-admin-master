@@ -1,9 +1,7 @@
 <template>
-  <div style="width: 15vw">
+  <div style="width: 15vw; height: 100vh;">
     <a-menu mode="inline" 
-    theme="dark" 
-    style="height: 100vh; width: 15vw"
-    >
+    theme="light" style="height: 100%; width: 15vw">
       <a-menu-item key="1">
         <template #icon>
           <PieChartOutlined />
@@ -140,7 +138,7 @@ const getSysDetail = (id:number | string, name:string, title:string)=>{
   const data = {id, name, title}
 store.commit("getSysDetail", JSON.stringify(data))
 }
-const active = store.state.flag
-console.log(active, 222)
+// const active = store.state.flag
+// console.log(active, 222)
 </script>
 <style scoped lang="less"></style>

@@ -7,7 +7,8 @@
       <a-breadcrumb-item>角色管理</a-breadcrumb-item>
       </a-breadcrumb>
     </a-card>
-    <a-card style="width: 85vw; height: 100%">
+    <br />
+    <a-card style="width: 83vw; height: 100%;margin-left: 1vw">
       <a-card style="width: 100%; height: 80px; line-height: 80px">
         <a-input-search placeholder="input search text" style="width: 200px" />
       </a-card>
@@ -33,7 +34,7 @@ import { reactive } from "vue";
 import type { TableColumnType } from "ant-design-vue";
 import { PostRequest } from "../../api/http";
 import { useStore } from "vuex";
-import { UserInfo, PromiseThen } from "./role";
+import { UserInfo, PromiseThen } from "./index";
 const store = useStore();
 // 渲染表头
 const columns: TableColumnType[] = reactive([

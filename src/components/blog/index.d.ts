@@ -12,3 +12,12 @@ export interface ROUTES {
         breadcrumbName: string
     }>
 }
+export interface CREATARTICLE{
+    [key: string]: any
+}
+
+export interface UPDATEARTICLE{
+    data:{
+        [key: string]:any
+    }
+}
