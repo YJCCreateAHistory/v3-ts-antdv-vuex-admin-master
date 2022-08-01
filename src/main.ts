@@ -35,10 +35,12 @@ import {
     List,
     ListItem,
     ListItemMeta,
-    Skeleton
-
+    Skeleton,
+    Popconfirm,
+    message
 } from "ant-design-vue"
 const app = createApp(App)
+
 app.component(Button.name, Button)
 app.component(Avatar.name, Avatar)
 app.component(InputSearch.name, InputSearch)
@@ -75,6 +77,7 @@ app.component(List.name, List)
 app.component(ListItem.name, ListItem)
 app.component(ListItemMeta.name, ListItemMeta)
 app.component(Skeleton.name, Skeleton)
+app.component(Popconfirm.name, Popconfirm)
 app.use(router)
 app.use(store)
 app.mount('#app')

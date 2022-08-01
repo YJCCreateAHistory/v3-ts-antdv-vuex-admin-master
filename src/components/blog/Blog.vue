@@ -27,7 +27,17 @@
               <a-button type="primary" @click="showUpdateFalg(record.id)"
                 >编辑</a-button
               >
-              <a-button type="primary">删除</a-button>
+              <a-popconfirm
+                title="是否确定删除该博客?"
+                ok-text="确定"
+                cancel-text="取消"
+                @confirm="confirm"
+                @cancel="cancel"
+              >
+                <a-button type="primary" @click="removeArticle(record.id)"
+                  >删除</a-button
+                >
+              </a-popconfirm>
             </div>
           </template>
         </template>
@@ -55,7 +65,7 @@
       :wrapper-col="{ span: 20 }"
       autocomplete="off"
     >
-      <a-form-item label="分类名称" name="classes">
+      <a-form-item label="分类名称" name="className">
         <a-input v-model:value="info.className" />
       </a-form-item>
       <a-form-item label="classValue" name="classValue">
@@ -169,16 +179,15 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive, ref, watch, shallowRef } from "vue";
+import { onMounted, reactive, ref, shallowRef, watch } from "vue";
 import { PostRequest } from "../../api/http";
 import type { TableColumnType } from "ant-design-vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { CLASSINFO, EL, CREATARTICLE, UPDATEARTICLE } from "./index";
 import type { Rule } from "ant-design-vue/es/form";
-import type { FormInstance } from "ant-design-vue";
 import Editor from "../Wangeditor.vue";
-import { computed } from "@vue/reactivity";
+import { message } from "ant-design-vue";
 const router = useRouter();
 const store = useStore();
 const columns: TableColumnType[] = reactive([
@@ -228,37 +237,34 @@ const columns: TableColumnType[] = reactive([
   },
 ]);
 // 存放用户数据
-const data = ref<CLASSINFO>([]);
-// 拿到管理员数据
-onMounted(() => {
+let data = ref<CLASSINFO>([]);
+// 拿到数据
+const getBlogLoist = () => {
   PostRequest("/blog/list").then((res: EL) => {
-    // res.records.forEach((el: EL, index: number) => {
-    //   data.push(el);
-    // });
-    // for(let i = 0; i < res.records.length; i++) {
-    //   data.push(res.records[i]);
-    // }
-    // 数组长度置为0
-    data.value.length = 0
-    data.value = [data.value, ...res.records];
+    // 使用reactive是数据失去响应式，这里使用ref也不要应使用push方法，使用解构
+    data.value = [...res.records];
   });
+};
+onMounted(() => {
+  getBlogLoist();
 });
+store.commit("getNewData", data);
 // 开关状态
-let publishFlag = ref<boolean>(false);
+const publishFlag = ref<boolean>(false);
 const changeState1 = () => {
   publishFlag.value = !publishFlag.value;
   console.log(publishFlag.value);
 };
-let topFlag = ref<boolean>(false);
+const topFlag = ref<boolean>(false);
 const changeState2 = () => {
   topFlag.value = !topFlag.value;
 };
-let hotFlag = ref<boolean>(false);
+const hotFlag = ref<boolean>(false);
 const changeState3 = () => {
   hotFlag.value = !hotFlag.value;
 };
 // 收集信息
-const info = reactive<CREATARTICLE>({
+const info = ref<CREATARTICLE>({
   id: "",
   classId: "",
   className: "",
@@ -282,20 +288,13 @@ const showCreateFlag = (e: any) => {
   createFalg.value = true;
 };
 // 提交博文
-const handleOk = async (e: MouseEvent) => {
+const handleOk = async () => {
+  // 等它执行完在执行后面的异步请求
+  await PostRequest("/blog/create", info.value);
   createFalg.value = false;
-  PostRequest("/blog/create", info);
-  getChange.value // 拿到变化的数据渲染
-  // console.log(getChange)
-  console.log(data.value)
+  getBlogLoist();
 };
 // 监视数据变化
-const getChange = computed(() => {
-  PostRequest("/blog/list").then((res: EL) => {
-    data.value.length = 0
-    data.value = [data.value, ...res.records];
-  });
-});
 // 修改博文
 const updateFalg = ref<boolean>(false);
 // 存放获取的数据
@@ -321,7 +320,7 @@ const updateinfo = reactive<UPDATEARTICLE>({
 });
 const showUpdateFalg = (id: string) => {
   // 请求携带参数
-  const params = {
+  const params: CLASSINFO = {
     id: id,
   };
   // 根据id获取行内数据
@@ -330,23 +329,23 @@ const showUpdateFalg = (id: string) => {
   });
   updateFalg.value = true;
 };
-let publish = ref<boolean>(false);
+const publish = ref<boolean>(false);
 const change1 = () => {
   publish.value = !publish.value;
   updateinfo.data.isPublish = publish.value;
   // console.log(updateinfo.data.isPublish);
 };
-let top = ref<boolean>(false);
+const top = ref<boolean>(false);
 const change2 = () => {
   top.value = !top.value;
   updateinfo.data.isTop = top.value;
 };
-let hot = ref<boolean>(false);
+const hot = ref<boolean>(false);
 const change3 = () => {
   hot.value = !hot.value;
   updateinfo.data.isHot = hot.value;
 };
-// // 博文内容
+// 博文内容
 // const createContent = ref<boolean>(false); // dialog弹窗
 // const showCreateContent = (e: any) => {
 //   createContent.value = true;
@@ -363,10 +362,24 @@ const change3 = () => {
 //   // PostRequest("/blog/create", info);
 // };
 // 保存修改的数据
-const handleUpdateArt = () => {
-  // console.log(updateinfo.data.content);
+const handleUpdateArt = async () => {
   updateFalg.value = false;
-  PostRequest("/blog/update", updateinfo.data);
+  await PostRequest("/blog/update", updateinfo.data);
+  getBlogLoist();
+};
+const removeArticle = (id: string) => {
+  const params: CLASSINFO = {
+    id: id,
+  };
+  PostRequest("/blog/delete", params);
+};
+const confirm = () => {
+    getBlogLoist();
+  // 删除博文
+  message.success("删除成功");
+};
+const cancel = () => {
+  message.error("取消删除");
 };
 </script>
 <style scoped lang="less"></style>

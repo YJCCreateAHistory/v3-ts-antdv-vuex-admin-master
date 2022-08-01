@@ -23,7 +23,7 @@ const store = createStore ({
             console.log(data)
             state.flag = data
         },
-        handleOk(state, data) {
+        getNewData(state, data) {
             state.blog = data
         }
     },
