@@ -1,5 +1,5 @@
 <template>
-  <a-card style="width: auto; margin-left: 1vw">
+  <a-card style="width: 100;">
     <a-breadcrumb>
       <a-breadcrumb-item>首页</a-breadcrumb-item>
       <a-breadcrumb-item>客户端管理</a-breadcrumb-item>
@@ -9,21 +9,18 @@
     <a-button type="primary" @click="showCreateClasses">新增分类</a-button>
     <a-table
       bordered
-      style="margin-top: 15px; width: 80vw"
+      style="margin-top: 15px; width: auto"
       :columns="columns"
       :data-source="data"
+      :scroll="{ x: 1500, y: 600 }"
     >
       <template #bodyCell="{ column, text, record }">
         <template v-if="column.dataIndex === 'do'">
-          <div
-            style="display: flex; justify-content: space-around;"
-          >
-            <a-button
-              type="primary"
-              @click="handleUpdateClasses(record.id)"
+          <div style="display: flex; justify-content: space-around">
+            <a-button type="primary" @click="handleUpdateClasses(record.id)"
               >编辑</a-button
             >
-            <a-button type="primary">删除</a-button>
+            <a-button type="primary" @click="removeClasses(record.id)">删除</a-button>
           </div>
         </template>
       </template>
@@ -41,23 +38,23 @@
       autocomplete="off"
     >
       <a-form-item label="分类名称" name="className">
-        <a-input v-model:value="createData.data.className" />
+        <a-input v-model:value="createData.className" />
       </a-form-item>
       <a-form-item label="classValue" name="classValue">
-        <a-input v-model:value="createData.data.classValue" />
+        <a-input v-model:value="createData.classValue" />
       </a-form-item>
       <a-form-item label="参数" name="query">
-        <a-input v-model:value="createData.data.query" />
+        <a-input v-model:value="createData.query" />
       </a-form-item>
       <a-form-item label="path" name="path">
-        <a-input v-model:value="createData.data.path" />
+        <a-input v-model:value="createData.path" />
       </a-form-item>
       <a-form-item name="创建时间" label="createDate">
         <a-date-picker
           show-time
           format="YYYY-MM-DD HH:mm:ss"
           value-format="YYYY-MM-DD HH:mm:ss"
-          v-model:value="createData.data.insertTime"
+          v-model:value="createData.insertTime"
         />
       </a-form-item>
       <a-form-item name="更新时间" label="updateDate">
@@ -65,7 +62,7 @@
           show-time
           format="YYYY-MM-DD HH:mm:ss"
           value-format="YYYY-MM-DD HH:mm:ss"
-          v-model:value="createData.data.updateTime"
+          v-model:value="createData.updateTime"
           disabled
         />
       </a-form-item>
@@ -116,13 +113,13 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { PostRequest } from "../../api/http";
 import type { TableColumnType } from "ant-design-vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { CLASSINFO, CLASSES, CREATECLASSES } from "./index";
-
+import { getClasses, createClasses, deleteClasses, updateClasses } from "./api";
 const router = useRouter();
 
 const store = useStore();
@@ -157,16 +154,18 @@ const columns: TableColumnType[] = reactive([
   },
 ]);
 // 拿到用户数据
-let data = reactive<CLASSINFO>([]);
+let data = ref<CLASSINFO>([]);
 // 拿到管理员数据
-const userData = PostRequest(`/blog/classes`).then((res: any) => {
-  res.records.forEach((el: CLASSES, index: string) => {
-    data.push(el);
+const getClassesList = () => {
+  getClasses().then((res: CLASSES) => {
+    data.value = [...res.records];
   });
+};
+onMounted(() => {
+  getClassesList()
 });
 // 存放新增分类数据
-const createData = reactive<CREATECLASSES>({
-  data: {
+const createData = ref<CLASSES>({
     id: "",
     className: "",
     classValue: "",
@@ -174,7 +173,7 @@ const createData = reactive<CREATECLASSES>({
     query: "",
     inertTime: "",
     updateTime: "",
-  },
+
 });
 // 新增框的标志
 const createFlag = ref<boolean>(false);
@@ -183,12 +182,13 @@ const showCreateClasses = () => {
   createFlag.value = !createFlag.value;
 };
 // 提交数据
-const handleCreateCate = () => {
+const handleCreateCate = async() => {
   // 新增数据
-  PostRequest("/blog/createClasses", createData.data);
+  await createClasses(createData.value)
   // 关闭新增框
   createFlag.value = !createFlag.value;
   // 清除框内数据
+  getClassesList();
   for (let key in createData.data) {
     createData.data[key] = "";
   }
@@ -212,17 +212,25 @@ const handleUpdateClasses = (id: string) => {
     id: id,
   };
   //根据id请求数据
-  PostRequest("/blog/classes", params).then((data: any) => {
-    console.log(data);
+    getClasses(params).then((data: any) => {
     updateData.data = data.records[0];
   });
   updateFlag.value = !updateFlag.value;
 };
 // 提交修改后的数据
-const handleUpdateCate = () => {
-  PostRequest("/blog/updateClasses", updateData.data);
+const handleUpdateCate = async() => {
+  await updateClasses( updateData.data);
   updateFlag.value = !updateFlag.value;
+  getClassesList()
 };
+// 删除分类
+const removeClasses = async(id:string)=>{
+  const params:CLASSINFO= {
+    id:id
+  }
+  await deleteClasses(params)
+  getClassesList()
+}
 </script>
 
 <style scoped lang="less"></style>
