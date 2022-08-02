@@ -1,63 +1,44 @@
 <template>
-  <div>
-    <a-card style="width: auto; margin-left: 1vw">
-      <a-breadcrumb style="margin-bottom: 20px">
-        <a-breadcrumb-item>首页</a-breadcrumb-item>
-        <a-breadcrumb-item>客户端管理</a-breadcrumb-item>
-        <a-breadcrumb-item>博文管理</a-breadcrumb-item>
-      </a-breadcrumb>
-      <div>
-        <a-button type="primary" @click="showCreateFlag">添加文章</a-button>
-      </div>
-      <a-table
-        bordered
-        style="margin-top: 15px; width: auto"
-        :columns="columns"
-        :data-source="data"
-      >
-        <template #bodyCell="{ column, text, record }">
-          <template v-if="column.dataIndex === 'do'">
-            <div
-              style="
-                display: flex;
-                justify-content: space-between;
-                width: 140px;
-              "
-            >
-              <a-button type="primary" @click="showUpdateFalg(record.id)"
-                >编辑</a-button
-              >
-              <a-popconfirm
-                title="是否确定删除该博客?"
-                ok-text="确定"
-                cancel-text="取消"
-                @confirm="confirm"
-                @cancel="cancel"
-              >
-                <a-button type="primary" @click="removeArticle(record.id)"
-                  >删除</a-button
-                >
-              </a-popconfirm>
-            </div>
-          </template>
-        </template>
-      </a-table>
-    </a-card>
-    <!-- <a-modal
-    v-model:visible="createContent"
-    title="添加文章内容"
-    @ok="setBlogContent"
-    style="width: 1200px"
-  >
-    <div class="editor">
-      defineEmits
-      <Editor
-        :data="updateinfo.data.content"
-        @onReceiveMsg="onReceiveMsg"
-      ></Editor>
+  <a-card style="width: 100">
+    <a-breadcrumb style="margin-bottom: 20px">
+      <a-breadcrumb-item>首页</a-breadcrumb-item>
+      <a-breadcrumb-item>客户端管理</a-breadcrumb-item>
+      <a-breadcrumb-item>博文管理</a-breadcrumb-item>
+    </a-breadcrumb>
+    <div>
+      <a-button type="primary" @click="showCreateFlag">添加文章</a-button>
     </div>
-  </a-modal> -->
-  </div>
+    <a-table
+      bordered
+      style="margin-top: 15px; width: auto"
+      :columns="columns"
+      :data-source="data"
+      :scroll="{ x: 1500, y: 600 }"
+    >
+      <template #bodyCell="{ column, text, record }">
+        <template v-if="column.dataIndex === 'do'">
+          <div
+            style="display: flex; justify-content: space-between; width: 140px"
+          >
+            <a-button type="primary" @click="showUpdateFalg(record.id)"
+              >编辑</a-button
+            >
+            <a-popconfirm
+              title="是否确定删除该博客?"
+              ok-text="确定"
+              cancel-text="取消"
+              @confirm="confirm"
+              @cancel="cancel"
+            >
+              <a-button type="primary" @click="removeArticle(record.id)"
+                >删除</a-button
+              >
+            </a-popconfirm>
+          </div>
+        </template>
+      </template>
+    </a-table>
+  </a-card>
   <a-modal v-model:visible="createFalg" title="新增博客信息" @ok="handleOk">
     <a-form
       name="basic"
@@ -179,15 +160,16 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref, shallowRef, watch } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { PostRequest } from "../../api/http";
+import { getBlogList, createBlogList, updateBlogList, deleteBlogList} from "./api";
 import type { TableColumnType } from "ant-design-vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { CLASSINFO, EL, CREATARTICLE, UPDATEARTICLE } from "./index";
 import type { Rule } from "ant-design-vue/es/form";
-import Editor from "../Wangeditor.vue";
 import { message } from "ant-design-vue";
+import { format } from "node:path/win32";
 const router = useRouter();
 const store = useStore();
 const columns: TableColumnType[] = reactive([
@@ -239,14 +221,13 @@ const columns: TableColumnType[] = reactive([
 // 存放用户数据
 let data = ref<CLASSINFO>([]);
 // 拿到数据
-const getBlogLoist = () => {
-  PostRequest("/blog/list").then((res: EL) => {
-    // 使用reactive是数据失去响应式，这里使用ref也不要应使用push方法，使用解构
+const getData = () => {
+  getBlogList().then((res: any) => {
     data.value = [...res.records];
   });
 };
 onMounted(() => {
-  getBlogLoist();
+  getData();
 });
 store.commit("getNewData", data);
 // 开关状态
@@ -290,9 +271,12 @@ const showCreateFlag = (e: any) => {
 // 提交博文
 const handleOk = async () => {
   // 等它执行完在执行后面的异步请求
-  await PostRequest("/blog/create", info.value);
+  await createBlogList(info.value);
   createFalg.value = false;
-  getBlogLoist();
+  getData();
+  for(let key in info){
+    info[key] = ""
+  }
 };
 // 监视数据变化
 // 修改博文
@@ -319,12 +303,13 @@ const updateinfo = reactive<UPDATEARTICLE>({
   },
 });
 const showUpdateFalg = (id: string) => {
+  console.log(id)
   // 请求携带参数
   const params: CLASSINFO = {
     id: id,
   };
   // 根据id获取行内数据
-  const data = PostRequest("/blog/list", params).then((res: any) => {
+  getBlogList(params).then((res: any) => {
     updateinfo.data = res.records[0];
   });
   updateFalg.value = true;
@@ -345,36 +330,21 @@ const change3 = () => {
   hot.value = !hot.value;
   updateinfo.data.isHot = hot.value;
 };
-// 博文内容
-// const createContent = ref<boolean>(false); // dialog弹窗
-// const showCreateContent = (e: any) => {
-//   createContent.value = true;
-// };
-// // 修改文章数据，这里通过defineEimts拿到数据
-// const onReceiveMsg = (params: any) => {
-//   updateinfo.data.content = params.value;
-//   // console.log(params.value, 1)
-// };
-// // console.log(updateinfo.data.content);
-// // 提交博文
-// const setBlogContent = async (e: MouseEvent) => {
-//   createContent.value = false;
-//   // PostRequest("/blog/create", info);
-// };
+
 // 保存修改的数据
 const handleUpdateArt = async () => {
   updateFalg.value = false;
-  await PostRequest("/blog/update", updateinfo.data);
-  getBlogLoist();
+  await updateBlogList(updateinfo.data);
+  getData();
 };
 const removeArticle = (id: string) => {
   const params: CLASSINFO = {
     id: id,
   };
-  PostRequest("/blog/delete", params);
+  deleteBlogList(params);
 };
 const confirm = () => {
-    getBlogLoist();
+  getData();
   // 删除博文
   message.success("删除成功");
 };
@@ -382,4 +352,10 @@ const cancel = () => {
   message.error("取消删除");
 };
 </script>
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.a-table {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+</style>
