@@ -9,6 +9,7 @@ export const updateBlogList = (params:EL):Promise<EL> => {
 export const deleteBlogList = (params:EL):Promise<EL> => {
     return PostRequest("/blog/delete", params)
 };
+
 export const createBlogList = (params:EL):Promise<EL> => {
     return PostRequest("/blog/create", params)
 };
