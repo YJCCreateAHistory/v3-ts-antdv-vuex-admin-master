@@ -8,9 +8,8 @@
 
 </script>
 <style scoped lang="less">
-// .con{
-//   width: 100vw;
-//   min-height: 100vh;
-//   background-color:#eee;
-// }
+.con{
+  min-height: 100vh;
+  background-color:#fff;
+}
 </style>

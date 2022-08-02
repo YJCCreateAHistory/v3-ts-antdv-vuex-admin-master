@@ -2,7 +2,6 @@ import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
 import 'ant-design-vue/dist/antd.css';
-import "./assets/iconfont/iconfont.css"
 import router from "./router/index"
 import store from "./store/index"
 import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons-vue';
@@ -37,7 +36,6 @@ import {
     ListItemMeta,
     Skeleton,
     Popconfirm,
-    message
 } from "ant-design-vue"
 const app = createApp(App)
 

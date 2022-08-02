@@ -16,7 +16,6 @@
     "ant-design-vue": "^3.2.10",
     "axios": "^0.27.2",
     "crypto-js": "^4.1.1",
-    "tinymce": "^6.1.1",
     "vue": "^3.2.37",
     "vuex": "^4.0.2",
     "vuex-persistedstate": "^4.1.0"

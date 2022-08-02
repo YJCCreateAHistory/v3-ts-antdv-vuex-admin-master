@@ -1,5 +1,5 @@
 <template>
-  <a-card style="width: 83vw; margin-left: 1vw">
+  <a-card style="width: 100; height: 100%">
     <a-breadcrumb :routes="routes">
       <template #itemRender="{ route, params, routes, paths }">
         <span v-if="routes.indexOf(route) === routes.length - 1">{{
@@ -10,20 +10,24 @@
         }}</router-link>
       </template>
     </a-breadcrumb>
-  </a-card>
-  <br />
-  <a-card style="width: 83vw; height: 100%; margin-left: 1vw">
-    <a-card style="width: 100%; height: 80px; line-height: 80px">
+    <br />
+    <a-card style="width: auto; height: 80px; line-height: 80px">
       <a-input-search placeholder="input search text" style="width: 200px" />
     </a-card>
-    <a-table bordered style="margin-top: 15px" :columns="columns" :data-source="data">
-      <template #bodyCell="{ column, text }">
-        <template v-if="column.dataIndex === 'do'">
-          <a-button type="primary" style="margin-right: 10px">编辑</a-button>
-          <a-button type="primary">删除</a-button>
+      <a-table
+        bordered
+        style="margin-top: 15px"
+        :columns="columns"
+        :data-source="data"
+        :scroll="{ x: 1500, y: 600 }"
+      >
+        <template #bodyCell="{ column, text }">
+          <template v-if="column.dataIndex === 'do'">
+            <a-button type="primary" style="margin-right: 10px">编辑</a-button>
+            <a-button type="primary">删除</a-button>
+          </template>
         </template>
-      </template>
-    </a-table>
+      </a-table>
   </a-card>
 </template>
 

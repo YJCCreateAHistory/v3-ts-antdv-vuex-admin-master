@@ -1,14 +1,14 @@
 <template>
-  <div style="width: 15vw; height: 100vh;">
-    <a-menu mode="inline" 
-    theme="light" style="height: 100%; width: 15vw">
+  <div style="width: 100">
+    <a-menu mode="horizontal"
+    theme="dark">
       <a-menu-item key="1">
         <template #icon>
           <PieChartOutlined />
         </template>
         <span>首页</span>
       </a-menu-item>
-      <a-sub-menu key="sub1">
+      <a-sub-menu key="sub1" >
         <template #icon>
           <MailOutlined />
         </template>
@@ -40,7 +40,7 @@
         <a-menu-item key="12" @click="loginOut">退出登录</a-menu-item>
       </a-sub-menu>
     </a-menu>
-  </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -49,10 +49,11 @@ import {
   MailOutlined,
   AppstoreOutlined,
 } from "@ant-design/icons-vue";
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { MenuType } from "./menu";
 import {useStore} from "vuex"
+const flag = ref<boolean>(false);
 const store = useStore()
 // 登出
 const router = useRouter();
@@ -82,7 +83,7 @@ const menu = reactive<MenuType>([
   },
   {
     id: 4,
-    title: "评论管理",
+    title: "文章内容",
     name:"Comment"
   },
   {
@@ -97,11 +98,6 @@ const menu = reactive<MenuType>([
   },
   {
     id: 7,
-    title: "音乐管理",
-    name:"Music"
-  },
-  {
-    id: 8,
     title: "标签管理",
     name:"Tag"
   },
@@ -138,7 +134,6 @@ const getSysDetail = (id:number | string, name:string, title:string)=>{
   const data = {id, name, title}
 store.commit("getSysDetail", JSON.stringify(data))
 }
-// const active = store.state.flag
-// console.log(active, 222)
+
 </script>
 <style scoped lang="less"></style>

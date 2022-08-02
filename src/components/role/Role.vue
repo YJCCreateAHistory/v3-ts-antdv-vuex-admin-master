@@ -1,22 +1,22 @@
 <template>
-  <div>
-    <a-card style="width: 83vw; margin-left: 1vw">
+  <a-card>
+    <a-card style="width: 100; margin-left: 1vw">
       <a-breadcrumb>
-      <a-breadcrumb-item>首页</a-breadcrumb-item>
-      <a-breadcrumb-item>系统管理</a-breadcrumb-item>
-      <a-breadcrumb-item>角色管理</a-breadcrumb-item>
+        <a-breadcrumb-item>首页</a-breadcrumb-item>
+        <a-breadcrumb-item>系统管理</a-breadcrumb-item>
+        <a-breadcrumb-item>角色管理</a-breadcrumb-item>
       </a-breadcrumb>
     </a-card>
     <br />
-    <a-card style="width: 83vw; height: 100%;margin-left: 1vw">
-      <a-card style="width: 100%; height: 80px; line-height: 80px">
-        <a-input-search placeholder="input search text" style="width: 200px" />
-      </a-card>
+    <a-card style="width: 100; height: 100%; margin-left: 1vw">
+      <a-input-search placeholder="input search text" style="width: 200px" />
+
       <a-table
         bordered
         style="margin-top: 15px"
         :columns="columns"
         :data-source="data"
+        :scroll="{ x: 1500, y: 600 }"
       >
         <template #bodyCell="{ column, text }">
           <template v-if="column.dataIndex === 'do'">
@@ -26,7 +26,7 @@
         </template>
       </a-table>
     </a-card>
-  </div>
+  </a-card>
 </template>
 
 <script setup lang="ts">
