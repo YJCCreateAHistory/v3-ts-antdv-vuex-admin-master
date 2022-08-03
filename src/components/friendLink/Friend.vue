@@ -1,15 +1,7 @@
 <template>
   <a-card style="width: 83vw; margin-left: 1vw">
-    <a-breadcrumb :routes="routes">
-      <template #itemRender="{ route, params, routes, paths }">
-        <span v-if="routes.indexOf(route) === routes.length - 1">{{
-          route.breadcrumbName
-        }}</span>
-        <router-link v-else :to="paths.join('/')">{{
-          route.breadcrumbName
-        }}</router-link>
-      </template>
-    </a-breadcrumb>
+    <BreadCrumb></BreadCrumb>
+
   </a-card>
   <br />
   <a-card style="width: 83vw; margin-left: 1vw">
@@ -58,20 +50,7 @@
 <script lang="ts" setup>
 import { ROUTE } from "./index";
 import { defineComponent, onMounted, ref, nextTick } from "vue";
-const routes = ref<ROUTE[]>([
-  {
-    path: "home",
-    breadcrumbName: "首页",
-  },
-  {
-    path: "home",
-    breadcrumbName: "客户端管理",
-  },
-  {
-    path: "",
-    breadcrumbName: "友链管理",
-  },
-]);
+import BreadCrumb from "../breadCrumb/BreadCrumb.vue";
 const count = 3;
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
 const initLoading = ref(true);

@@ -1,15 +1,9 @@
 <template>
   <a-card style="width: 100; height: 100%">
-    <a-breadcrumb :routes="routes">
-      <template #itemRender="{ route, params, routes, paths }">
-        <span v-if="routes.indexOf(route) === routes.length - 1">{{
-          route.breadcrumbName
-        }}</span>
-        <router-link v-else :to="paths.join('/')">{{
-          route.breadcrumbName
-        }}</router-link>
-      </template>
-    </a-breadcrumb>
+    <a-card>
+      <BreadCrumb></BreadCrumb>
+    </a-card>
+
     <br />
     <a-card style="width: auto; height: 80px; line-height: 80px">
       <a-input-search placeholder="input search text" style="width: 200px" />
@@ -36,20 +30,7 @@ import { ROUTE, SITEINFO, CALLBACK } from "./index";
 import { defineComponent, onMounted, ref, nextTick, reactive } from "vue";
 import type { TableColumnType } from "ant-design-vue";
 import { PostRequest } from "../../api/http";
-const routes = ref<ROUTE[]>([
-  {
-    path: "/home",
-    breadcrumbName: "首页",
-  },
-  {
-    path: "/",
-    breadcrumbName: "客户端管理",
-  },
-  {
-    path: "",
-    breadcrumbName: "站点管理",
-  },
-]);
+import BreadCrumb from "../breadCrumb/BreadCrumb.vue";
 
 const columns: TableColumnType[] = reactive([
   {

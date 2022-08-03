@@ -1,17 +1,11 @@
 <template>
   <a-card>
-    <a-card style="width: 100; margin-left: 1vw">
-      <a-breadcrumb>
-        <a-breadcrumb-item>首页</a-breadcrumb-item>
-        <a-breadcrumb-item>系统管理</a-breadcrumb-item>
-        <a-breadcrumb-item>角色管理</a-breadcrumb-item>
-      </a-breadcrumb>
-    </a-card>
+    <BreadCrumb></BreadCrumb>
     <br />
     <a-card style="width: 100; height: 100%; margin-left: 1vw">
       <a-input-search placeholder="" style="width: 200px" />
       <br /><br />
-    <a-button type="primary">新增</a-button>
+      <a-button type="primary">新增</a-button>
       <a-table
         bordered
         style="margin-top: 15px"
@@ -21,7 +15,13 @@
       >
         <template #bodyCell="{ column, text }">
           <template v-if="column.dataIndex === 'do'">
-            <div style="display: flex; width: 140px;justify-content: space-between;">
+            <div
+              style="
+                display: flex;
+                width: 140px;
+                justify-content: space-between;
+              "
+            >
               <a-button type="primary">编辑</a-button>
               <a-button type="primary">删除</a-button>
             </div>
@@ -42,6 +42,7 @@ import {
   createSocialsList,
   deleteSocialsList,
 } from "./api";
+import BreadCrumb from "../breadCrumb/BreadCrumb.vue";
 // 渲染表头
 const columns: TableColumnType[] = reactive([
   {

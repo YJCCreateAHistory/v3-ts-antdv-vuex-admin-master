@@ -1,13 +1,13 @@
 import {createStore} from "vuex"
 import createPersistedState from "vuex-persistedstate"
-import {TOKEN, PAGEINFO, FLAG} from "./type"
+import {TOKEN, PAGEINFO, FLAG} from "./store"
 const store = createStore ({
     state:{
         data:"",
         page:{},
         flag:{},
-        blog:[]
-
+        blog:[],
+        article:[]
     },
     mutations:{
         // 存放token
@@ -25,6 +25,9 @@ const store = createStore ({
         },
         getNewData(state, data) {
             state.blog = data
+        },
+        setDataContent(state:PAGEINFO, data:FLAG){
+            state.article = data
         }
     },
     actions:{
@@ -34,7 +37,6 @@ const store = createStore ({
     plugins:[
         createPersistedState({
             storage:window.sessionStorage
-
         })
     ]
 })

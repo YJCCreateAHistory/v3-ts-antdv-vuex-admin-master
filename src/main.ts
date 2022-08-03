@@ -3,7 +3,7 @@ import './style.css'
 import App from './App.vue'
 import 'ant-design-vue/dist/antd.css';
 import router from "./router/index"
-import store from "./store/index"
+import store from "./store/store"
 import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons-vue';
 import { StarOutlined, StarFilled, StarTwoTone, AppstoreOutlined, MailOutlined, PieChartOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons-vue';
 import {

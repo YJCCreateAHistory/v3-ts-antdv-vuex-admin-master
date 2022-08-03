@@ -1,11 +1,7 @@
 <template>
   <a-card>
     <a-card style="width: 100; margin-left: 1vw">
-      <a-breadcrumb>
-        <a-breadcrumb-item>首页</a-breadcrumb-item>
-        <a-breadcrumb-item>系统管理</a-breadcrumb-item>
-        <a-breadcrumb-item>角色管理</a-breadcrumb-item>
-      </a-breadcrumb>
+    <BreadCrumb></BreadCrumb>
     </a-card>
     <br />
     <a-card style="width: 100; height: 100%; margin-left: 1vw">
@@ -35,6 +31,8 @@ import type { TableColumnType } from "ant-design-vue";
 import { PostRequest } from "../../api/http";
 import { useStore } from "vuex";
 import { UserInfo, PromiseThen } from "./index";
+import BreadCrumb from "../breadCrumb/BreadCrumb.vue";
+
 const store = useStore();
 // 渲染表头
 const columns: TableColumnType[] = reactive([

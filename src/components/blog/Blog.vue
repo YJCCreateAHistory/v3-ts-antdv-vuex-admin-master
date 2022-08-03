@@ -1,10 +1,7 @@
 <template>
   <a-card style="width: 100">
-    <a-breadcrumb style="margin-bottom: 20px">
-      <a-breadcrumb-item>首页</a-breadcrumb-item>
-      <a-breadcrumb-item>客户端管理</a-breadcrumb-item>
-      <a-breadcrumb-item>博文管理</a-breadcrumb-item>
-    </a-breadcrumb>
+    <BreadCrumb></BreadCrumb>
+    <br />
     <div>
       <a-button type="primary" @click="showCreateFlag">添加文章</a-button>
     </div>
@@ -42,9 +39,12 @@
   <a-modal v-model:visible="createFalg" title="新增博客信息" @ok="handleOk">
     <a-form
       name="basic"
+      :model="info"
       :label-col="{ span: 4 }"
       :wrapper-col="{ span: 20 }"
       autocomplete="off"
+      :rules="rules"
+      ref="formRef"
     >
       <a-form-item label="分类名称" name="className">
         <a-input v-model:value="info.className" />
@@ -55,9 +55,6 @@
       <a-form-item label="文章题目" name="title">
         <a-input v-model:value="info.title" />
       </a-form-item>
-      <a-form-item label="是否发布" name="isPublish">
-        <a-switch :checked="publishFlag" @change="changeState1" />
-      </a-form-item>
       <a-form-item label="主要内容" name="summary">
         <a-input v-model:value="info.summary" />
       </a-form-item>
@@ -65,7 +62,7 @@
         <a-input v-model:value="info.img" />
       </a-form-item>
       <a-form-item label="文章内容" name="content">
-        <a-input v-model:value="info.content" />
+        <a-button type="primary" @click="goEditorcontent">文章内容</a-button>
       </a-form-item>
       <a-form-item label="是否置顶" name="isTop">
         <a-switch :checked="topFlag" @change="changeState2" />
@@ -98,9 +95,11 @@
   >
     <a-form
       name="basic"
+      :model="updateinfo.data"
       :label-col="{ span: 4 }"
       :wrapper-col="{ span: 20 }"
       autocomplete="off"
+      :rules="rules"
     >
       <a-form-item label="分类名称" name="classes">
         <a-input v-model:value="updateinfo.data.className" />
@@ -111,18 +110,15 @@
       <a-form-item label="文章题目" name="title">
         <a-input v-model:value="updateinfo.data.title" />
       </a-form-item>
-      <a-form-item label="是否发布" name="isPublish">
-        <a-switch :checked="publish" @change="change1" />
-      </a-form-item>
       <a-form-item label="主要内容" name="summary">
         <a-input v-model:value="updateinfo.data.summary" />
       </a-form-item>
       <a-form-item label="文章图片" name="img">
         <a-input v-model:value="updateinfo.data.img" />
       </a-form-item>
-      <!-- <a-form-item label="文章内容" name="content">
-        <a-button @click="showCreateContent" type="primary" >修改文章内容</a-button>
-      </a-form-item> -->
+      <a-form-item label="文章内容" name="content">
+        <a-button @click="showCreateContent" type="primary">文章内容</a-button>
+      </a-form-item>
       <a-form-item label="是否置顶" name="isTop">
         <a-switch :checked="top" @change="change2" />
       </a-form-item>
@@ -161,17 +157,46 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
-import { PostRequest } from "../../api/http";
-import { getBlogList, createBlogList, updateBlogList, deleteBlogList} from "./api";
+import {
+  getBlogList,
+  createBlogList,
+  updateBlogList,
+  deleteBlogList,
+} from "./api";
 import type { TableColumnType } from "ant-design-vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { CLASSINFO, EL, CREATARTICLE, UPDATEARTICLE } from "./index";
-import type { Rule } from "ant-design-vue/es/form";
 import { message } from "ant-design-vue";
-import { format } from "node:path/win32";
-const router = useRouter();
+import BreadCrumb from "../breadCrumb/BreadCrumb.vue";
+import type { FormInstance } from "ant-design-vue";
+import router from "../../router";
 const store = useStore();
+// 表单校验
+const rules: CLASSINFO = {
+  className: [
+    { required: true, message: "请输入分类名", trigger: "blur" },
+    { max: 20, trigger: "change" },
+  ],
+  classValue: [
+    { required: true, message: "不能为空", trigger: "blur" },
+    { max: 20, trigger: "change" },
+  ],
+  title: [
+    { required: true, message: "请输入文章题目", trigger: "blur" },
+    { max: 20, trigger: "change" },
+  ],
+  summary: [
+    { required: true, message: "请输入文章摘要", trigger: "blur" },
+    { max: 20, trigger: "change" },
+  ],
+  img: [
+    { required: true, message: "请输入文章配图", trigger: "blur" },
+    { max: 20, trigger: "change" },
+  ],
+};
+const formRef = ref<FormInstance>();
+// const vlaues = await formRef.value.validateFields()
 const columns: TableColumnType[] = reactive([
   {
     title: "id",
@@ -268,14 +293,23 @@ const createFalg = ref<boolean>(false); // dialog弹窗
 const showCreateFlag = (e: any) => {
   createFalg.value = true;
 };
+const goEditorcontent = () => {
+  router.push({
+    name: "Editor",
+    params: {
+      id: "134xhsowmd&wjksmmd1423wqe0p342k",
+      key: "create",
+    },
+  });
+};
 // 提交博文
 const handleOk = async () => {
   // 等它执行完在执行后面的异步请求
   await createBlogList(info.value);
   createFalg.value = false;
   getData();
-  for(let key in info){
-    info[key] = ""
+  for (let key in info) {
+    info[key] = "";
   }
 };
 // 监视数据变化
@@ -303,7 +337,6 @@ const updateinfo = reactive<UPDATEARTICLE>({
   },
 });
 const showUpdateFalg = (id: string) => {
-  console.log(id)
   // 请求携带参数
   const params: CLASSINFO = {
     id: id,
@@ -311,6 +344,7 @@ const showUpdateFalg = (id: string) => {
   // 根据id获取行内数据
   getBlogList(params).then((res: any) => {
     updateinfo.data = res.records[0];
+    store.commit("setDataContent", res.records[0]);
   });
   updateFalg.value = true;
 };
@@ -330,7 +364,15 @@ const change3 = () => {
   hot.value = !hot.value;
   updateinfo.data.isHot = hot.value;
 };
-
+const showCreateContent = () => {
+  router.push({
+    name: "Editor",
+    params: {
+      id: "234534sdfasda23r5as23365ghdfggj",
+      key: "update",
+    },
+  });
+};
 // 保存修改的数据
 const handleUpdateArt = async () => {
   updateFalg.value = false;

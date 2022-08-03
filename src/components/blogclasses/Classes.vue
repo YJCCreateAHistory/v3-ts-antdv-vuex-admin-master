@@ -1,10 +1,8 @@
 <template>
   <a-card style="width: 100;">
-    <a-breadcrumb>
-      <a-breadcrumb-item>首页</a-breadcrumb-item>
-      <a-breadcrumb-item>客户端管理</a-breadcrumb-item>
-      <a-breadcrumb-item>分类管理</a-breadcrumb-item>
-    </a-breadcrumb>
+<a-card>
+  <BreadCrumb></BreadCrumb>
+</a-card>
     <br />
     <a-button type="primary" @click="showCreateClasses">新增分类</a-button>
     <a-table
@@ -120,6 +118,8 @@ import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { CLASSINFO, CLASSES, CREATECLASSES } from "./index";
 import { getClasses, createClasses, deleteClasses, updateClasses } from "./api";
+import BreadCrumb from "../breadCrumb/BreadCrumb.vue";
+
 const router = useRouter();
 
 const store = useStore();
