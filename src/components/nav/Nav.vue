@@ -3,7 +3,7 @@
     <div class="left">
       <a-avatar
         :size="45"
-        src="../../assets/cool-background (4).png"
+        src=""
       ></a-avatar>
     </div>
     <div class="right">

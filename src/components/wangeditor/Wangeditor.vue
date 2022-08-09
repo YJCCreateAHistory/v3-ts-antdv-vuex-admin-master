@@ -20,9 +20,11 @@
 import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 import { onBeforeUnmount, ref, shallowRef, onMounted, defineProps, reactive, defineEmits, toRef } from "vue";
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
-import {useRoute} from "vue-router"
+import {useRoute, useRouter} from "vue-router"
 import { useStore } from "vuex";
 import {DATA, ToolbarConfig} from "./index"
+import router from "../../router";
+import {getBlogContentById} from "./api"
 
 const routes = useRoute()
 const store = useStore()
@@ -42,16 +44,25 @@ const handleCreated = (editor: any) => {
 };
 // console.log(routes.params)
 const valueHtml = ref()
-const data:DATA = store.state.article
-// console.log(data)
-if(data.id!=="") {
-  console.log(data)
-  valueHtml.value = data.content
-}else {
-  valueHtml.value = ""
+let params:DATA = {
+  id:routes.params.id
 }
+onMounted(()=>{
+  // 路由进来后根据路由id拿到博文数据
+  getBlogContentById(params).then((res:DATA)=>{
+    valueHtml.value = res.records[0].content
+  })
+})
 const submitContent = ()=>{
-    
+  // 提交修改后的文章信息
+  store.commit("setNewContent", valueHtml.value)
+  // 保存之后返回博客界面继续修改操作
+  router.push({
+    name:'Blog',
+    params:{
+      content:`${valueHtml.value}`
+    }
+  })
 }
 </script>
 <style scoped lang="less"></style>

@@ -1,5 +1,5 @@
 export interface DATA {
-    [key: string]: string
+    [key: string]: any
   }
 
 export interface ToolbarConfig {

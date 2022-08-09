@@ -165,13 +165,14 @@ import {
 } from "./api";
 import type { TableColumnType } from "ant-design-vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { CLASSINFO, EL, CREATARTICLE, UPDATEARTICLE } from "./index";
 import { message } from "ant-design-vue";
 import BreadCrumb from "../breadCrumb/BreadCrumb.vue";
 import type { FormInstance } from "ant-design-vue";
 import router from "../../router";
 const store = useStore();
+const routes = useRoute();
 // 表单校验
 const rules: CLASSINFO = {
   className: [
@@ -344,10 +345,10 @@ const showUpdateFalg = (id: string) => {
   // 根据id获取行内数据
   getBlogList(params).then((res: any) => {
     updateinfo.data = res.records[0];
-    store.commit("setDataContent", res.records[0]);
   });
   updateFalg.value = true;
 };
+// 获取传过来的新数据
 const publish = ref<boolean>(false);
 const change1 = () => {
   publish.value = !publish.value;
@@ -368,13 +369,14 @@ const showCreateContent = () => {
   router.push({
     name: "Editor",
     params: {
-      id: "234534sdfasda23r5as23365ghdfggj",
-      key: "update",
+      id: `${updateinfo.data.id}`,
     },
   });
 };
 // 保存修改的数据
 const handleUpdateArt = async () => {
+  updateinfo.data.content = store.state.content;
+  console.log(updateinfo.data.content);
   updateFalg.value = false;
   await updateBlogList(updateinfo.data);
   getData();
