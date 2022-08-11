@@ -59,16 +59,6 @@ const routes: Array<RouteRecordRaw> = [
             }
           },
           {
-            path: '/client/editor/:id',
-            name: "Editor",
-            component: () => import("../components/editor/Editor.vue"),
-            meta: {
-              keepAlive: true,
-              title: "内容管理"
-
-            }
-          },
-          {
             path: '/client/socials',
             name: "Socials",
             component: () => import("../components/socials/Socials.vue"),

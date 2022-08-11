@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <a-card style="width: 85;  height: 100%">
   <a-card>
     <BreadCrumb></BreadCrumb>
@@ -16,4 +16,4 @@ import Editor from "../wangeditor/Wangeditor.vue";
 import  BreadCrumb  from "../breadCrumb/BreadCrumb.vue";
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less"></style> -->

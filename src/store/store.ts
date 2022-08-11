@@ -1,3 +1,4 @@
+import { computed } from "vue";
 import {createStore} from "vuex"
 import createPersistedState from "vuex-persistedstate"
 import {TOKEN, PAGEINFO, FLAG} from "./index"
@@ -15,12 +16,8 @@ const store = createStore ({
         getNewData(state:PAGEINFO, data:FLAG) {
             state.blog = data
         },
-        setNewContent(state:PAGEINFO, data:string) {
-            state.content = data
-        }
     },
     actions:{
-
     },
     // 本地储存
     plugins:[
