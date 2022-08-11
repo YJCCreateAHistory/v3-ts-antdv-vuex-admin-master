@@ -153,6 +153,15 @@
       </a-form-item>
     </a-form>
   </a-modal>
+  <!-- v-if销毁组件 -->
+  <a-modal
+    v-model:visible="updateContentFalg"
+    title='文章详情'
+    @ok="submitContent"
+    v-if="updateContentFalg"
+  >
+    <Editor :msg="dd" @handleChangeUpdate="handleChangeUpdate" @handleChangeCreate="handleChangeCreate"> </Editor>
+  </a-modal>
 </template>
 
 <script setup lang="ts">
@@ -165,14 +174,14 @@ import {
 } from "./api";
 import type { TableColumnType } from "ant-design-vue";
 import { useStore } from "vuex";
-import { useRoute } from "vue-router";
 import { CLASSINFO, EL, CREATARTICLE, UPDATEARTICLE } from "./index";
 import { message } from "ant-design-vue";
 import BreadCrumb from "../breadCrumb/BreadCrumb.vue";
+import Editor from "../wangeditor/Wangeditor.vue";
 import type { FormInstance } from "ant-design-vue";
-import router from "../../router";
+import { computed } from "@vue/reactivity";
 const store = useStore();
-const routes = useRoute();
+
 // 表单校验
 const rules: CLASSINFO = {
   className: [
@@ -256,6 +265,12 @@ onMounted(() => {
   getData();
 });
 store.commit("getNewData", data);
+
+const updateContentFalg = ref<boolean>(false); // 表单框标志
+// 提交内容关闭弹窗
+const submitContent = () => {
+  updateContentFalg.value = !updateContentFalg.value;
+};
 // 开关状态
 const publishFlag = ref<boolean>(false);
 const changeState1 = () => {
@@ -294,14 +309,14 @@ const createFalg = ref<boolean>(false); // dialog弹窗
 const showCreateFlag = (e: any) => {
   createFalg.value = true;
 };
+// 拿到创建的博文内容
+const handleChangeCreate = (val:string)=>{
+
+  info.value.content = val
+}
 const goEditorcontent = () => {
-  router.push({
-    name: "Editor",
-    params: {
-      id: "134xhsowmd&wjksmmd1423wqe0p342k",
-      key: "create",
-    },
-  });
+  updateContentFalg.value = !updateContentFalg.value;
+
 };
 // 提交博文
 const handleOk = async () => {
@@ -337,24 +352,27 @@ const updateinfo = reactive<UPDATEARTICLE>({
     updateTime: "",
   },
 });
-const showUpdateFalg = (id: string) => {
+// 传给content的id
+let dd = ref<string>("");
+const showUpdateFalg = async (id: string) => {
   // 请求携带参数
   const params: CLASSINFO = {
     id: id,
   };
   // 根据id获取行内数据
-  getBlogList(params).then((res: any) => {
+  await getBlogList(params).then((res: any) => {
     updateinfo.data = res.records[0];
   });
+  dd.value = updateinfo.data.id;
   updateFalg.value = true;
 };
 // 获取传过来的新数据
-const publish = ref<boolean>(false);
-const change1 = () => {
-  publish.value = !publish.value;
-  updateinfo.data.isPublish = publish.value;
-  // console.log(updateinfo.data.isPublish);
-};
+// const publish = ref<boolean>(false);
+// const change1 = () => {
+//   publish.value = !publish.value;
+//   updateinfo.data.isPublish = publish.value;
+//   // console.log(updateinfo.data.isPublish);
+// };
 const top = ref<boolean>(false);
 const change2 = () => {
   top.value = !top.value;
@@ -365,18 +383,16 @@ const change3 = () => {
   hot.value = !hot.value;
   updateinfo.data.isHot = hot.value;
 };
+// 富文本编辑器穿传过来的文本
+const handleChangeUpdate = (val:string)=>{
+  updateinfo.data.content = val
+}
+// 修改内容弹窗
 const showCreateContent = () => {
-  router.push({
-    name: "Editor",
-    params: {
-      id: `${updateinfo.data.id}`,
-    },
-  });
+  updateContentFalg.value = !updateContentFalg.value;
 };
 // 保存修改的数据
 const handleUpdateArt = async () => {
-  updateinfo.data.content = store.state.content;
-  console.log(updateinfo.data.content);
   updateFalg.value = false;
   await updateBlogList(updateinfo.data);
   getData();
@@ -395,6 +411,15 @@ const confirm = () => {
 const cancel = () => {
   message.error("取消删除");
 };
+// 动态更改信息框标题名
+let _headName = ref<string>("")
+computed(()=>{
+  if(createFalg.value === true) {
+    _headName.value = "增加博文"
+  }else {
+    _headName.value = "修改博文"
+  }
+})
 </script>
 <style scoped lang="less">
 .a-table {
