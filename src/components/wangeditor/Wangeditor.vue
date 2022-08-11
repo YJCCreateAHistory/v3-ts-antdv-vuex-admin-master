@@ -14,24 +14,29 @@
       @onCreated="handleCreated"
     />
   </div>
-  <a-button type="primary" style="margin-top:10px" @click="submitContent">保存</a-button>
+  <br />
+  <a-button type="primary" @click="submitNewContent">保存</a-button>
 </template>
 <script lang="ts" setup>
 import "@wangeditor/editor/dist/css/style.css"; // 引入 css
-import { onBeforeUnmount, ref, shallowRef, onMounted, defineProps, reactive, defineEmits, toRef } from "vue";
+import {
+  onBeforeUnmount,
+  ref,
+  shallowRef,
+  onMounted,
+  defineProps,
+  defineEmits,
+} from "vue";
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
-import {useRoute, useRouter} from "vue-router"
 import { useStore } from "vuex";
-import {DATA, ToolbarConfig} from "./index"
-import router from "../../router";
-import {getBlogContentById} from "./api"
+import { DATA, ToolbarConfig } from "./index";
+import { getBlogContentById } from "./api";
 
-const routes = useRoute()
-const store = useStore()
+const store = useStore();
 const mode = ref<string>("default");
 // 编辑器实例，必须用 shallowRef
 const editorRef = shallowRef();
-const toolbarConfig:ToolbarConfig = {};
+const toolbarConfig: ToolbarConfig = {};
 const editorConfig = { placeholder: "请输入内容..." };
 // 组件销毁时，也及时销毁编辑器
 onBeforeUnmount(() => {
@@ -42,27 +47,29 @@ onBeforeUnmount(() => {
 const handleCreated = (editor: any) => {
   editorRef.value = editor; // 记录 editor 实例，重要！
 };
-// console.log(routes.params)
-const valueHtml = ref()
-let params:DATA = {
-  id:routes.params.id
-}
-onMounted(()=>{
+const props = defineProps({
+  msg: String,
+});
+const valueHtml = ref();
+let params: DATA = {
+  // 接收传进来相应文章的id
+  id: props.msg,
+};
+onMounted(() => {
   // 路由进来后根据路由id拿到博文数据
-  getBlogContentById(params).then((res:DATA)=>{
-    valueHtml.value = res.records[0].content
-  })
-})
-const submitContent = ()=>{
-  // 提交修改后的文章信息
-  store.commit("setNewContent", valueHtml.value)
-  // 保存之后返回博客界面继续修改操作
-  router.push({
-    name:'Blog',
-    params:{
-      content:`${valueHtml.value}`
-    }
-  })
-}
+  getBlogContentById(params).then((res: DATA) => {
+    valueHtml.value = res.records[0].content;
+  });
+});
+// 给blog传递文本数据
+const emits = defineEmits<{
+  (e: "handleChangeCreate", valueHtml: string): void;
+  (e: "handleChangeUpdate", valueHtml: string): void;
+}>();
+const submitNewContent = () => {
+  emits("handleChangeCreate", valueHtml.value);
+  emits("handleChangeUpdate", valueHtml.value);
+};
+// 组件退出后要进行销毁，不然再进来还是之前的状态
 </script>
 <style scoped lang="less"></style>
