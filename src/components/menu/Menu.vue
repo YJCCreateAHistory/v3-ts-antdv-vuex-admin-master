@@ -80,7 +80,6 @@ const loginOut = () => {
 };
 // 根据id跳转页面
 const getMenuDetail = (path: string, name: string) => {
-  console.log(path, name);
   router.push({
     name: `${name}`,
     params: { path },
