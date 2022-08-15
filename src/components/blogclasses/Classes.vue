@@ -1,8 +1,9 @@
 <template>
-  <a-card style="width: 100;">
-<a-card>
-  <BreadCrumb></BreadCrumb>
-</a-card>
+  <a-card style="width: 100">
+    <BreadCrumb></BreadCrumb>
+    <br />
+    <a-input-search placeholder="input search text" style="width: 300px" @search="searchClasses" v-model:value="classValue"/>
+    <br />
     <br />
     <a-button type="primary" @click="showCreateClasses">新增分类</a-button>
     <a-table
@@ -18,7 +19,9 @@
             <a-button type="primary" @click="handleUpdateClasses(record.id)"
               >编辑</a-button
             >
-            <a-button type="primary" @click="removeClasses(record.id)">删除</a-button>
+            <a-button type="primary" @click="removeClasses(record.id)"
+              >删除</a-button
+            >
           </div>
         </template>
       </template>
@@ -162,18 +165,17 @@ const getClassesList = () => {
   });
 };
 onMounted(() => {
-  getClassesList()
+  getClassesList();
 });
 // 存放新增分类数据
 const createData = ref<CLASSES>({
-    id: "",
-    className: "",
-    classValue: "",
-    path: "",
-    query: "",
-    inertTime: "",
-    updateTime: "",
-
+  id: "",
+  className: "",
+  classValue: "",
+  path: "",
+  query: "",
+  inertTime: "",
+  updateTime: "",
 });
 // 新增框的标志
 const createFlag = ref<boolean>(false);
@@ -182,9 +184,9 @@ const showCreateClasses = () => {
   createFlag.value = !createFlag.value;
 };
 // 提交数据
-const handleCreateCate = async() => {
+const handleCreateCate = async () => {
   // 新增数据
-  await createClasses(createData.value)
+  await createClasses(createData.value);
   // 关闭新增框
   createFlag.value = !createFlag.value;
   // 清除框内数据
@@ -212,24 +214,30 @@ const handleUpdateClasses = (id: string) => {
     id: id,
   };
   //根据id请求数据
-    getClasses(params).then((data: any) => {
+  getClasses(params).then((data: any) => {
     updateData.data = data.records[0];
   });
   updateFlag.value = !updateFlag.value;
 };
 // 提交修改后的数据
-const handleUpdateCate = async() => {
-  await updateClasses( updateData.data);
+const handleUpdateCate = async () => {
+  await updateClasses(updateData.data);
   updateFlag.value = !updateFlag.value;
-  getClassesList()
+  getClassesList();
 };
 // 删除分类
-const removeClasses = async(id:string)=>{
-  const params:CLASSINFO= {
-    id:id
-  }
-  await deleteClasses(params)
-  getClassesList()
+const removeClasses = async (id: string) => {
+  const params: CLASSINFO = {
+    id: id,
+  };
+  await deleteClasses(params);
+  getClassesList();
+};
+
+// 搜索分类
+const classValue = ref<string>("")
+const searchClasses = ()=>{
+  console.log(classValue);
 }
 </script>
 

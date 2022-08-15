@@ -1,10 +1,7 @@
 <template>
   <div class="container">
     <div class="left">
-      <a-avatar
-        :size="45"
-        src=""
-      ></a-avatar>
+      <a-avatar :size="45" src=""></a-avatar>
     </div>
     <div class="right">
       <ul>
@@ -62,10 +59,10 @@
             </template>
           </icon>
         </li>
-        <li><setting-outlined /></li>
-        <li><poweroff-outlined /></li>
-        <li><sound-outlined/></li>
-        <li><github-outlined /></li>
+        <li @click=""><setting-outlined /></li>
+        <li @click="loginOut"><poweroff-outlined /></li>
+        <li><sound-outlined /></li>
+        <li><a href="https://github.com/YJCCreateAHistory" style="text-decoration: none;color:black"><github-outlined /></a></li>
       </ul>
     </div>
   </div>
@@ -76,15 +73,23 @@ import Icon, {
   SettingOutlined,
   PoweroffOutlined,
   SoundOutlined,
-  GithubOutlined
+  GithubOutlined,
 } from "@ant-design/icons-vue";
+import {useRouter} from "vue-router"
+const router = useRouter()
+const loginOut = () => {
+  window.sessionStorage.clear();
+  router.push({
+    name: "Login",
+    params: {},
+  });
+};
 </script>
 
 <style scoped lang="less">
 .container {
-  background-color: #fff;
-  // display: flex;
-  // justify-content: space-between;
+  // background-color: #fff;
+  background-image: url("../../assets/wallhaven-wqve97_1920x1080.png");
   height: 50px;
   position: relative;
   .left {

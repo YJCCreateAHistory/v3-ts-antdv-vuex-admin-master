@@ -2,6 +2,9 @@
   <a-card style="width: 100">
     <BreadCrumb></BreadCrumb>
     <br />
+     <a-input-search placeholder="input search text" style="width: 300px" :v-model:value="getKeywords"/>
+     <br />
+    <br />
     <div>
       <a-button type="primary" @click="showCreateFlag">添加文章</a-button>
     </div>
@@ -420,6 +423,9 @@ computed(()=>{
     _headName.value = "修改博文"
   }
 })
+
+// 筛选功能
+const getKeywords = ref()
 </script>
 <style scoped lang="less">
 .a-table {
@@ -427,4 +433,5 @@ computed(()=>{
   left: 50%;
   transform: translateX(-50%);
 }
+
 </style>

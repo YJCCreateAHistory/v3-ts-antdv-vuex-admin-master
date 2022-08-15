@@ -6,7 +6,8 @@
           <PieChartOutlined />
         </template>
         <span>
-          {{ data.meta.title }} <router-link :to="data.path"></router-link></span>
+          {{ data.meta.title }} <router-link :to="data.path"></router-link
+        ></span>
       </a-menu-item>
       <a-sub-menu key="sub1">
         <template #icon>
@@ -37,7 +38,7 @@
       </a-sub-menu>
       <a-sub-menu key="sub3">
         <template #icon>
-          <AppstoreOutlined />
+          <setting-outlined />
         </template>
         <template #title>设置</template>
         <a-menu-item key="12" @click="loginOut">退出登录</a-menu-item>
@@ -48,6 +49,7 @@
 
 <script setup lang="ts">
 import {
+  SettingOutlined,
   PieChartOutlined,
   MailOutlined,
   AppstoreOutlined,
@@ -57,7 +59,6 @@ import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
 import { MenuType } from "./index";
 const store = useStore();
-// 登出
 const router = useRouter();
 const routes = useRoute();
 const menulist: MenuType = computed(() => {

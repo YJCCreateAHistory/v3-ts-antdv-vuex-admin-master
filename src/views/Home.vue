@@ -1,12 +1,10 @@
 <template>
-  <div style="height: 100%">
+  <div class="container">
     <Nav></Nav>
-    <a-card>
-      <Menu></Menu>
-      <a-card class="card" :bordered="flag">
-        <router-view></router-view>
-      </a-card>
-    </a-card>
+    <Menu></Menu>
+
+      <router-view></router-view>
+
   </div>
 </template>
 
@@ -18,12 +16,8 @@ const flag = ref<boolean>(false);
 </script>
 
 <style scoped lang="less">
-.homePage {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  .card {
-    width: 90%;
-  }
+.container {
+  background-image: url("./assets/wallhaven-1kv693_1920x1080.png");
+
 }
 </style>
